@@ -1,0 +1,20 @@
+ownRepo: git@github.com:vwdfive/zum-central-deployment.git
+
+projects:
+  adapter:
+    name: zum-adapter
+    repo: git@github.com:vwdfive/zum-adapter-infra.git
+    stages:
+      - name: dev
+        regions: 
+          - name: emea
+            cluster: https://zum-6f6817d8.hcp.germanywestcentral.azmk8s.io
+            namespaces:
+              - audi
+              - vwn
+      - name: staging
+        regions:
+          - name: emea
+            cluster: https://zum-beb93538.hcp.germanywestcentral.azmk8s.io
+            namespaces:
+              - audi
