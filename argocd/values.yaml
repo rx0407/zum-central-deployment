@@ -1,0 +1,77 @@
+ownRepo: git@github.com:rx0407/zum-central-deployment.git
+
+argo-cd:
+  server:
+    certificate:
+      enabled: false
+    extraArgs:
+      - --insecure
+    ingress:
+      enabled: true
+      annotations:
+        appgw.ingress.kubernetes.io/ssl-redirect: "true"
+      hosts:
+        - argocd.ci.zum-vwac.com
+      ingressClassName: azure-application-gateway
+      paths:
+        - /
+      pathType: Prefix
+      https: true
+      tls:
+        - secretName: argocd-server-tls
+          hosts:
+            - argocd.ci.zum-vwac.com
+projects:
+  adapter:
+    name: zum-adapter
+    repo: git@github.com:rx0407/zum-adapter-infra.git
+    stages:
+      # - name: dev
+      #   regions: 
+      #     - name: emea
+      #       cluster: https://zum-6f6817d8.hcp.germanywestcentral.azmk8s.io
+      #       namespaces:
+      #         - audi
+      #         - vwn
+      # - name: staging
+      #   regions:
+      #     - name: emea
+      #       cluster: https://zum-beb93538.hcp.germanywestcentral.azmk8s.io
+      #       namespaces:
+      #         - audi
+      #         - bentley
+      #         - seat
+      #         - skoda
+      #         - vw
+      - name: prod
+        regions: 
+          - name: emea
+            cluster: https://zum-87335fb9.hcp.chinanorth3.cx.prod.service.azk8s.cn
+            namespaces:
+              - audi
+              - bentley
+              - seat
+              - skoda
+              - vw
+      # - name: prod
+      #   regions:
+      #     - name: nar
+      #       cluster: https://zum-c5112851.hcp.eastus.azmk8s.io
+      #       namespaces:
+      #         - audi
+  uvr:
+    name: zum-uvr
+    repo: git@github.com:rx0407/zum-uvr-infra.git
+    stages:
+      - name: dev
+        regions:
+          - name: emea
+            cluster: https://zum-d4cb03ce.hcp.chinanorth3.cx.prod.service.azk8s.cn
+          # - name: nar
+          #   cluster: https://zum-09850b57.hcp.eastus.azmk8s.io
+      # - name: staging
+      #   regions:
+      #     - name: emea
+      #       cluster: https://zum-90d3df41.hcp.germanywestcentral.azmk8s.io
+      #     - name: nar
+      #       cluster: https://zum-a6e7315d.hcp.eastus.azmk8s.io

@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: adapter-post-dev-hook
+spec:
+  volumes:
+  - name: repokey
+    secret:
+      secretName: adapter-infra-repo
+  containers:
+  - name: adapter-post-dev-hook
+    image: alpine
+    imagePullPolicy: IfNotPresent
+    command:
+      - apk add --no-cache git
+      - git clone -i "/etc/repokey/sshPrivateKey" git@github.com:vwdfive/zum-adapter-infra.git
+      - cd zum-adapter-infra
+      - cp docker-image-tag-dev.txt docker-image-tag-staging.txt
+      - git add .
+      - git commit -m "Bump staging app version"
+      - git push
+      - exit 0
+    volumeMounts:
+    - name: repokey
+      readOnly: true
+      mountPath: "/etc/repokey"
+  restartPolicy: Never

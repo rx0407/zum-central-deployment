@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: {{ .Values.projects.adapter.name }}
+  namespace: argocd
+  # finalizers:
+  #   - resources-finalizer.argocd.argoproj.io
+spec:
+  sourceRepos:
+  - {{ .Values.projects.adapter.repo }}
+  destinations:
+    {{- range $stages := .Values.projects.adapter.stages }}
+    {{- range $regions := $stages.regions }}
+    {{- range $regions.namespaces }}
+    - namespace: {{ . }}
+      server: {{ $regions.cluster }}
+    {{- end }}
+    {{- end }}
+    {{- end }}
+  clusterResourceWhitelist:
+  - group: ''
+    kind: Namespace
